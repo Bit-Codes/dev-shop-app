@@ -23,9 +23,9 @@ export default function RootLayout() {
       theme={colorScheme === "dark" ? Colors.dark : Colors.light}
     >
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
+        <Stack initialRouteName="(tabs)">
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ title: "Voltar" }} />
+          <Stack.Screen name="(auth)" options={{ title: "Volta" }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>

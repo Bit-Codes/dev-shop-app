@@ -1,20 +1,16 @@
+import CategorySection from "@/components/CategorySection";
+import FlashSaleSection from "@/components/FlashSaleSection";
+import SearchSection from "@/components/SeachSection";
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { navigate } = useRouter();
   return (
     <SafeAreaView>
-      <Pressable
-        onPress={() => {
-          navigate("/");
-        }}
-      >
-        <Text>Vibrar</Text>
-      </Pressable>
+      <SearchSection />
+      <CategorySection />
+      <FlashSaleSection />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({});
