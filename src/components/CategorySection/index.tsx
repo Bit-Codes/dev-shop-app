@@ -1,3 +1,4 @@
+import { useProducts } from "@/contexts/ProductsContext";
 import React from "react";
 import styled from "styled-components/native";
 
@@ -33,15 +34,21 @@ const Label = styled.Text`
 `;
 
 export default function CategorySection() {
-  const categories = ["Phones", "Consoles", "Laptops", "Cameras", "Audio"];
+  const { categories, getProductsByCategory, loadProducts } = useProducts();
 
   return (
     <Container>
       <Title>Categories</Title>
       <Scroll>
+        <CategoryCard onPress={() => loadProducts()}>
+          <Label>Todos</Label>
+        </CategoryCard>
         {categories.map((cat) => (
-          <CategoryCard key={cat}>
-            <Label>{cat}</Label>
+          <CategoryCard
+            key={cat.id}
+            onPress={() => getProductsByCategory(cat.id)}
+          >
+            <Label>{cat.name}</Label>
           </CategoryCard>
         ))}
       </Scroll>

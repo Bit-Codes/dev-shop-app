@@ -1,3 +1,5 @@
+import { useCart } from "@/contexts/CartContext";
+import { CartItem } from "@/types/cart";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
@@ -16,10 +18,11 @@ const Label = styled.Text`
   font-size: 16px;
 `;
 
-export default function AddToCartButton() {
+export default function AddToCartButton({ product }: { product: CartItem }) {
+  const { addToCart } = useCart();
   return (
-    <Button onPress={() => console.log("Added to cart")}>
-      <Label>Add to cart</Label>
+    <Button onPress={() => addToCart(product)}>
+      <Label>Adicionar</Label>
     </Button>
   );
 }

@@ -1,8 +1,28 @@
 import Button from "@/components/Button";
+import { useAuth } from "@/contexts/AuthContext";
 import * as S from "@/styles/auth.style";
 import { Divider } from "@/styles/components/Divider";
+import { LoginFormData } from "@/types/auth";
+import { Controller, useForm } from "react-hook-form";
 
 export default function Login() {
+  const { login } = useAuth();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (data: LoginFormData) => {
+    login(data.email, data.password);
+  };
+
   return (
     <S.FormContainer>
       <S.FormBox style={{ elevation: 4 }}>
@@ -10,13 +30,61 @@ export default function Login() {
         <S.FormSubTitle>Bem vindo!</S.FormSubTitle>
         <S.FormInputBox>
           <S.FormInputlabel>Email</S.FormInputlabel>
-          <S.FormInput placeholder="example@example.com" />
+
+          <Controller
+            control={control}
+            name="email"
+            rules={{
+              required: "Email Obrigatório",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Email inválido",
+              },
+            }}
+            render={({ field }) => (
+              <S.FormInput
+                onChangeText={field.onChange}
+                value={field.value}
+                onBlur={field.onBlur}
+                keyboardType="email-address"
+                placeholder="example@example.com"
+                autoCapitalize="none"
+              />
+            )}
+          />
+          {errors.email?.message && (
+            <S.ErrorText>{errors.email?.message}</S.ErrorText>
+          )}
         </S.FormInputBox>
         <S.FormInputBox>
           <S.FormInputlabel>Senha</S.FormInputlabel>
-          <S.FormInput placeholder="*****" secureTextEntry />
+
+          <Controller
+            control={control}
+            name="password"
+            rules={{
+              required: "Senha Obrigatória",
+              minLength: {
+                value: 6,
+                message: "Senha deve conter pelo menos 6 caracteres",
+              },
+            }}
+            render={({ field }) => (
+              <S.FormInput
+                onChangeText={field.onChange}
+                value={field.value}
+                onBlur={field.onBlur}
+                secureTextEntry
+                placeholder="*******"
+                autoCapitalize="none"
+              />
+            )}
+          />
+          {errors.password?.message && (
+            <S.ErrorText>{errors.password?.message}</S.ErrorText>
+          )}
         </S.FormInputBox>
-        <Button text="Entrar" />
+        <Button text="Entrar" onPress={handleSubmit(onSubmit)} />
         <Divider />
         <S.HelperText href="/(auth)/register">Cadastre-se</S.HelperText>
       </S.FormBox>

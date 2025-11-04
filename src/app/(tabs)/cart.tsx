@@ -1,5 +1,6 @@
+import { useCart } from "@/contexts/CartContext";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import React, { useState } from "react";
+import React from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
@@ -115,68 +116,101 @@ const CheckoutText = styled.Text`
   font-size: 16px;
 `;
 
-const items = [
-  {
-    id: "1",
-    name: "Nintendo Switch Lite, Yellow",
-    price: "£109.00",
-  },
-  {
-    id: "2",
-    name: "The Legend of Zelda: Tears of the Kingdom (Nintendo Switch)",
-    price: "£39.00",
-  },
-];
+const EmptyCartContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const EmptyCartText = styled.Text`
+  color: ${({ theme }: any) => theme.text};
+  font-size: 18px;
+  text-align: center;
+  margin-top: 16px;
+`;
+
+const TotalContainer = styled.View`
+  background-color: ${({ theme }: any) => theme.card};
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+`;
+
+const TotalText = styled.Text`
+  color: ${({ theme }: any) => theme.text};
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+`;
 
 export default function CartScreen() {
-  const [cartItems, setCartItems] = useState(items);
+  const {
+    items,
+    updateQuantity,
+    removeFromCart,
+    getTotalPrice,
+    getTotalItems,
+  } = useCart();
+
+  console.log(items);
 
   return (
     <Container>
       <Header>
-        <Title>Cart</Title>
+        <Title>Carrinho ({getTotalItems()})</Title>
         <MaterialIcons name="more-horiz" size={24} color="#888" />
       </Header>
 
-      <AddressBox>
-        <MaterialIcons name="location-on" size={20} color="#888" />
-        <AddressText>92 High Street, London</AddressText>
-        <MaterialIcons name="chevron-right" size={22} color="#888" />
-      </AddressBox>
+      {items.length === 0 ? (
+        <EmptyCartContainer>
+          <MaterialIcons name="shopping-cart" size={64} color="#888" />
+          <EmptyCartText>Seu carrinho está vazio</EmptyCartText>
+        </EmptyCartContainer>
+      ) : (
+        <>
+          <AddressBox>
+            <MaterialIcons name="location-on" size={20} color="#888" />
+            <AddressText>Endereço de entrega</AddressText>
+            <MaterialIcons name="chevron-right" size={22} color="#888" />
+          </AddressBox>
 
-      <SelectAll>
-        <MaterialIcons name="check-circle" size={22} color="#6dd97f" />
-        <SelectText>Select all</SelectText>
-      </SelectAll>
+          <FlatList
+            data={items}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <ItemCard>
+                <Img source={{ uri: item.image }} />
+                <ItemInfo>
+                  <ItemName>{item.name}</ItemName>
+                  <ItemPrice>R$ {item.price.toFixed(2)}</ItemPrice>
+                </ItemInfo>
 
-      <FlatList
-        data={cartItems}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <ItemCard>
-            <MaterialIcons name="check-circle" size={22} color="#6dd97f" />
-            {/* <Img source={item.image} /> */}
-            <ItemInfo>
-              <ItemName>{item.name}</ItemName>
-              <ItemPrice>{item.price}</ItemPrice>
-            </ItemInfo>
+                <QtyBox>
+                  <QtyBtn
+                    onPress={() => updateQuantity(item.id, item.quantity - 1)}
+                  >
+                    <MaterialIcons name="remove" size={18} color="#fff" />
+                  </QtyBtn>
+                  <QtyText>{item.quantity}</QtyText>
+                  <QtyBtn
+                    onPress={() => updateQuantity(item.id, item.quantity + 1)}
+                  >
+                    <MaterialIcons name="add" size={18} color="#fff" />
+                  </QtyBtn>
+                </QtyBox>
+              </ItemCard>
+            )}
+          />
 
-            <QtyBox>
-              <QtyBtn>
-                <MaterialIcons name="remove" size={18} color="#fff" />
-              </QtyBtn>
-              <QtyText>1</QtyText>
-              <QtyBtn>
-                <MaterialIcons name="add" size={18} color="#fff" />
-              </QtyBtn>
-            </QtyBox>
-          </ItemCard>
-        )}
-      />
+          <TotalContainer>
+            <TotalText>Total: R$ {getTotalPrice().toFixed(2)}</TotalText>
+          </TotalContainer>
 
-      <CheckoutBtn>
-        <CheckoutText>Checkout</CheckoutText>
-      </CheckoutBtn>
+          <CheckoutBtn>
+            <CheckoutText>Finalizar Compra</CheckoutText>
+          </CheckoutBtn>
+        </>
+      )}
     </Container>
   );
 }

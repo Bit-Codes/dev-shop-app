@@ -47,3 +47,8 @@ export const HelperText = styled(Link)`
   color: ${({ theme }: any) => theme.brandSecondary};
   font-size: 14px;
 `;
+
+export const ErrorText = styled.Text`
+  color: #d30a0a;
+  font-size: 12px;
+`;

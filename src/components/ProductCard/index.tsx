@@ -1,10 +1,11 @@
+import { formatBRL } from "@/utils/formatBRL";
 import { useRouter } from "expo-router";
 import React from "react";
 import { ImageSourcePropType } from "react-native";
 import styled from "styled-components/native";
 
 const CardButton = styled.TouchableOpacity`
-  width: 160px;
+  width: 48%;
   background-color: ${({ theme }: any) => theme.background};
   border-radius: 16px;
   margin-right: 14px;
@@ -15,7 +16,6 @@ const CardButton = styled.TouchableOpacity`
 const Img = styled.Image`
   width: 100%;
   height: 120px;
-  resize-mode: contain;
   border-radius: 12px;
 `;
 
@@ -42,7 +42,7 @@ const OldPrice = styled.Text`
 interface Props {
   id: string | number;
   name: string;
-  price: string;
+  price: number;
   oldPrice?: string;
   image?: ImageSourcePropType;
 }
@@ -62,9 +62,9 @@ export default function ProductCard({
 
   return (
     <CardButton activeOpacity={0.8} onPress={handlePress}>
-      <Img source={image} />
+      <Img source={{ uri: image as string }} />
       <Name numberOfLines={2}>{name}</Name>
-      <Price>{price}</Price>
+      <Price>{formatBRL(price)}</Price>
       {oldPrice && <OldPrice>{oldPrice}</OldPrice>}
     </CardButton>
   );

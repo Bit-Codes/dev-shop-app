@@ -3,13 +3,15 @@ import React, { Suspense } from "react";
 
 import { HapticTab } from "@/components/haptic-tab";
 import { Colors } from "@/constants/theme";
+import { useCart } from "@/contexts/CartContext";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import * as S from "@/styles/mainLayout.style";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { getTotalItems } = useCart();
 
   return (
     <Suspense fallback={<View style={{ flex: 1 }} />}>
@@ -75,15 +77,41 @@ export default function TabLayout() {
             title: "Carrinho",
             headerShown: false,
             tabBarIcon: ({ focused }) => (
-              <MaterialIcons
-                size={28}
-                name="shopping-basket"
-                color={
-                  focused
-                    ? Colors[colorScheme ?? "light"].brand
-                    : Colors[colorScheme ?? "light"].bgIcon
-                }
-              />
+              <View style={{ position: "relative" }}>
+                <MaterialIcons
+                  size={28}
+                  name="shopping-basket"
+                  color={
+                    focused
+                      ? Colors[colorScheme ?? "light"].brand
+                      : Colors[colorScheme ?? "light"].bgIcon
+                  }
+                />
+
+                <View
+                  style={{
+                    position: "absolute",
+                    top: -5,
+                    right: -5,
+                    backgroundColor: "red",
+                    borderRadius: 10,
+                    minWidth: 20,
+                    height: 20,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 12,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {getTotalItems()}
+                  </Text>
+                </View>
+              </View>
             ),
           }}
         />
@@ -121,7 +149,13 @@ export default function TabLayout() {
             ),
           }}
         />
-          
+        <Tabs.Screen
+          name="product/[id]"
+          options={{
+            headerShown: false,
+            href: null,
+          }}
+        />
       </Tabs>
     </Suspense>
   );
